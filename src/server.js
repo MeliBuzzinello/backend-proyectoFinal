@@ -1,15 +1,34 @@
-const express = require('express')
-const { Router } = express
+import express from 'express';
+const { Router } = express;
+import handlebars from 'express-handlebars';
 
-const ContenedorArchivo = require('./contenedores/ContenedorArchivo.js')
+import {
+    productosDao as productosApi,
+    carritosDao as carritosApi
+} from './daos/index.js';
+
+// import ContenedorArchivo  from './contenedores/ContenedorArchivo.js';
 
 //--------------------------------------------
 // instancio servidor y persistencia
 
 const app = express()
 
-const productosApi = new ContenedorArchivo('./dbProductos.json')
-const carritosApi = new ContenedorArchivo('dbCarritos.json')
+// app.engine(
+//     'hbs',
+//     handlebars({
+//         extname: '.html',
+//         defaultLayout: 'productos.html',
+//         layoutsDir: __dirname + '/public/carrito.html',
+//         partialsDir: __dirname + '/public/productos.html'
+//     })
+// );
+
+app.set('view engine', 'html');
+app.set('views', './public');
+
+// const productosApi = new ContenedorArchivo('./dbProductos.json')
+// const carritosApi = new ContenedorArchivo('dbCarritos.json')
 
 //--------------------------------------------
 // permisos de administrador
@@ -42,22 +61,23 @@ function soloAdmins(req, res, next) {
 const productosRouter = new Router()
 
 productosRouter.get('/', async (req, res) => {
-    const products = productosApi.listarAll();
-    res.send(await products);
+    const products = await productosApi.listarAll();
+    res.render('productos', {products, listExists: true});
 });
 
 productosRouter.post('/', soloAdmins, async (req, res) => {
-    res.send(await productosApi.guardar(req.body));
+    const products = await productosApi.guardar(req.body);
+    res.render('productos', {products, listExists: true});
 });
 
 productosRouter.put('/:id', soloAdmins, async (req, res) => {
     const { id } = req.params;
-    res.send(await productosApi.actualizar(req.body, id));
+    res.render(await productosApi.actualizar(req.body, id));
 });
 
 productosRouter.delete('/:pos', soloAdmins, async (req, res) => {
     const { pos } = req.params;
-    res.send(await productosApi.borrar(pos));
+    res.render(await productosApi.borrar(pos));
 });
 
 //--------------------------------------------
@@ -120,4 +140,4 @@ app.use(express.static('public'))
 app.use('/api/productos', productosRouter)
 app.use('/api/carritos', carritosRouter)
 
-module.exports = app
+export default app

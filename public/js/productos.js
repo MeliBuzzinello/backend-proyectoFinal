@@ -34,6 +34,7 @@ const productosApi = {
 //-------------------------------------------------------------------
 // productos
 
+
 actualizarListaProductos()
 
 const formAgregarProducto = document.getElementById('formAgregarProducto')
@@ -73,7 +74,8 @@ function borrarProducto(idProd) {
 }
 
 function actualizarProducto(idProd) {
-    const nuevoProd = leerProductoDelFormulario()
+    console.log(idProd)
+    const nuevoProd = llenarFormulario()
     productosApi.put(idProd, nuevoProd)
         .then(actualizarListaProductos)
 }

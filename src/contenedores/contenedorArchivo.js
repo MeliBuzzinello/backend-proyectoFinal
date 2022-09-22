@@ -1,9 +1,10 @@
-const { promises: fs } = require('fs')
+import { promises as fs } from 'fs';
+import config from '../config.js';
 
 class ContenedorArchivo {
 
     constructor(ruta) {
-        this.ruta = ruta;
+        this.ruta = `${config.fileSystem.path}/${ruta}`;
     }
 
     async listar(id) {
@@ -25,7 +26,9 @@ class ContenedorArchivo {
         try {
             const products = await fs.readFile(this.ruta , 'utf-8');
             const productsObj = JSON.parse(products); 
-            productsObj.push(obj);
+            const idMay = Math.max(...productsObj.map(x=>parseInt(x.id)))
+            const prodId = {id:idMay + 1, ...obj};
+            productsObj.push(prodId);
             await fs.writeFile(this.ruta , JSON.stringify(productsObj, null, 2));
         } catch (error) {
             console.log(error)
@@ -60,7 +63,6 @@ class ContenedorArchivo {
             console.error(error)
         }
     }
-    
 }
 
-module.exports = ContenedorArchivo;
+export default ContenedorArchivo;

@@ -160,6 +160,7 @@ function loadComboCarrito() {
     return carritosApi.getIds()
         .then(ids => {
             const combo = document.getElementById('comboCarritos');
+            console.log(combo)
             vaciarCombo(combo)
             combo.appendChild(crearOpcionInicial('elija un carrito'))
             for (const id of ids) {
