@@ -1,5 +1,7 @@
 import ContenedorSQL from "../../contenedores/ContenedorSQL.js"
 import config from '../../config.js'
+// import crearTablasProductos from '../../../scripts/crearTablas.js'
+
 
 class ProductosDaoSQLite3 extends ContenedorSQL {
 

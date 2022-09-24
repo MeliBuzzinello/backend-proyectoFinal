@@ -1,7 +1,4 @@
 import knex from 'knex';
-i
-
-
 
 class ContenedorSQL {
 

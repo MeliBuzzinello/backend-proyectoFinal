@@ -1,11 +1,18 @@
 import express from 'express';
 const { Router } = express;
-import handlebars from 'express-handlebars';
+// import handlebars from 'express-handlebars';
+import { engine } from 'express-handlebars';
 
 import {
     productosDao as productosApi,
     carritosDao as carritosApi
 } from './daos/index.js';
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // import ContenedorArchivo  from './contenedores/ContenedorArchivo.js';
 
@@ -14,18 +21,22 @@ import {
 
 const app = express()
 
+app.engine('hbs', engine());
+app.set('view engine', 'hbs');
+app.set("views", "./public");
+
 // app.engine(
 //     'hbs',
 //     handlebars({
-//         extname: '.html',
-//         defaultLayout: 'productos.html',
-//         layoutsDir: __dirname + '/public/carrito.html',
-//         partialsDir: __dirname + '/public/productos.html'
+//         extname: 'hbs',
+//         defaultLayout: 'plantillas',
+//         layoutsDir: __dirname + '/public',
 //     })
 // );
 
-app.set('view engine', 'html');
-app.set('views', './public');
+// app.set('view engine', 'hbs');
+// app.set('views', './public');
+
 
 // const productosApi = new ContenedorArchivo('./dbProductos.json')
 // const carritosApi = new ContenedorArchivo('dbCarritos.json')
@@ -62,22 +73,22 @@ const productosRouter = new Router()
 
 productosRouter.get('/', async (req, res) => {
     const products = await productosApi.listarAll();
-    res.render('productos', {products, listExists: true});
+    res.render('productos', products);
 });
 
 productosRouter.post('/', soloAdmins, async (req, res) => {
     const products = await productosApi.guardar(req.body);
-    res.render('productos', {products, listExists: true});
+    res.render('productos', products);
 });
 
 productosRouter.put('/:id', soloAdmins, async (req, res) => {
     const { id } = req.params;
-    res.render(await productosApi.actualizar(req.body, id));
+    res.send(await productosApi.actualizar(req.body, id));
 });
 
 productosRouter.delete('/:pos', soloAdmins, async (req, res) => {
     const { pos } = req.params;
-    res.render(await productosApi.borrar(pos));
+    res.send(await productosApi.borrar(pos));
 });
 
 //--------------------------------------------
@@ -85,57 +96,59 @@ productosRouter.delete('/:pos', soloAdmins, async (req, res) => {
 
 const carritosRouter = new Router()
 
-let id = 1;
+const idCar = 0;
+
+carritosRouter.get('/', async (req, res) => {
+        const products = await carritosApi.listarAll();
+        res.send(products);
+});
 
 carritosRouter.post('/', async (req, res) => {
-    try {
         const carrito = {};
-        carrito.id = id++;
+        carrito.idCar = idCar++;
         carrito.timestamp = Date.now();
         carrito.productos = (req.body); 
-        res.json(await carritosApi.guardar(carrito));
-        return(carrito.id);
-     } catch (error) {
-       console.log(error);  
-     }
+        res.send(await carritosApi.guardar(carrito));
 });
 
-carritosRouter.delete('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        res.json(carritosApi.borrar(id));
-    } catch (error) {
-        console.log(error);
-    }
+carritosRouter.delete('/:idCar', async (req, res) => {
+        const { idCar } = req.params;
+        res.send(await carritosApi.borrar(idCar));
 });
 
-carritosRouter.get('/:id/productos', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const products = carritosApi.listarAll();
-        const product = products.find(e => e.id == id);
+//--------------------------------------------
+// router de productos en carrito
+
+carritosRouter.get('/:idCar/productos', async (req, res) => {
+        const { idCar } = req.params;
+        const products = await carritosApi.listarAll();
+        const product = products.find(e => e.idCar == idCar);
         const newProducts = products.filter(e => e != product);
-        res.json(newProducts.productos);
-    } catch (error) {
-        console.log(error);
-    }
-});
+        res.send(newProducts.productos);
+})
 
-carritosRouter.delete('/:id/productos/:id_prod', async (req, res) => {
-    try {
-        const { id } = req.params;
-        res.json(carritosApi.borrar(id));
-    } catch (error) {
-        console.log(error);
-    }
-});
+carritosRouter.post('/:idCar/productos', async (req, res) => {
+        const { idCar } = req.params;
+        const carrito = carritosApi.listar(idCar);
+        carrito.productos = (req.body); 
+        res.send(await carritosApi.guardar(carrito));
+})
+
+carritosRouter.delete('/:idCar/productos/:idProd', async (req, res) => {
+        const { idCar } = req.params;
+        const { idProd } = req.params;
+        const carrito = await carritosApi.listar(idCar);
+        const prodcar = carrito.find(e => e.idProd == idProd)
+        const prodDelet = carrito.filter(e => e != prodcar)
+        res.send(prodDelet);
+})
 
 //--------------------------------------------
 // configuro el servidor
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static('public'))
+app.use(express.static(__dirname +'/public'))
 
 app.use('/api/productos', productosRouter)
 app.use('/api/carritos', carritosRouter)

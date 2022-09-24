@@ -90,40 +90,47 @@ function actualizarListaCarrito(idCarrito) {
 }
 
 function makeHtmlTable(productos) {
-    let html = `
-        <style>
-            .table td,
-            .table th {
-                vertical-align: middle;
-            }
-        </style>`
+    return fetch('plantillas/tabla-productos.hbs')
+        .then(respuesta => respuesta.text())
+        .then(plantilla => {
+            const template = Handlebars.compile(plantilla);
+            const html = template({ productos })
+            return html
+        })
+    // let html = `
+    //     <style>
+    //         .table td,
+    //         .table th {
+    //             vertical-align: middle;
+    //         }
+    //     </style>`
 
-    if (productos.length > 0) {
-        html += `
-        <h2>Lista de Productos</h2>
-        <div class="table-responsive">
-            <table class="table table-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Foto</th>
-                </tr>`
-        for (const prod of productos) {
-            html += `
-                    <tr>
-                    <td>${prod.title}</td>
-                    <td>$${prod.price}</td>
-                    <td><img width="50" src=${prod.thumbnail} alt="not found"></td>
-                    <td><a type="button" onclick="quitarDelCarrito('${prod.id}')">borrar</a></td>
-                    </tr>`
-        }
-        html += `
-            </table>
-        </div >`
-    } else {
-        html += `<br><h4>carrito sin productos</h2>`
-    }
-    return Promise.resolve(html)
+    // if (productos.length > 0) {
+    //     html += `
+    //     <h2>Lista de Productos</h2>
+    //     <div class="table-responsive">
+    //         <table class="table table-dark">
+    //             <tr>
+    //                 <th>Nombre</th>
+    //                 <th>Precio</th>
+    //                 <th>Foto</th>
+    //             </tr>`
+    //     for (const prod of productos) {
+    //         html += `
+    //                 <tr>
+    //                 <td>${prod.title}</td>
+    //                 <td>$${prod.price}</td>
+    //                 <td><img width="50" src=${prod.thumbnail} alt="not found"></td>
+    //                 <td><a type="button" onclick="quitarDelCarrito('${prod.id}')">borrar</a></td>
+    //                 </tr>`
+    //     }
+    //     html += `
+    //         </table>
+    //     </div >`
+    // } else {
+    //     html += `<br><h4>carrito sin productos</h2>`
+    // }
+    // return Promise.resolve(html)
 }
 
 function crearOpcionInicial(leyenda) {

@@ -88,37 +88,47 @@ function llenarFormulario(title = '', price = '', thumbnail = '') {
 }
 
 function makeHtmlTable(productos) {
-    let html = `
-        <style>
-            .table td,
-            .table th {
-                vertical-align: middle;
-            }
-        </style>`
 
-    if (productos.length > 0) {
-        html += `
-        <h2>Lista de Productos</h2>
-        <div class="table-responsive">
-            <table class="table table-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Foto</th>
-                </tr>`
-        for (const prod of productos) {
-            html += `
-                    <tr>
-                    <td><a type="button" onclick="llenarFormulario('${prod.title}', '${prod.price}','${prod.thumbnail}')" title="copiar a formulario...">${prod.title}</a></td>
-                    <td>$${prod.price}</td>
-                    <td><img width="50" src=${prod.thumbnail} alt="not found"></td>
-                    <td><a type="button" onclick="borrarProducto('${prod.id}')">borrar</a></td>
-                    <td><a type="button" onclick="actualizarProducto('${prod.id}')">actualizar</a></td>
-                    </tr>`
-        }
-        html += `
-            </table>
-        </div >`
-    }
-    return Promise.resolve(html)
+
+    
+    return fetch('plantillas/tabla-productos.hbs')
+        .then(respuesta => respuesta.text())
+        .then(plantilla => {
+            const template = Handlebars.compile(plantilla);
+            const html = template({ productos })
+            return html
+        })
+    // let html = `
+    //     <style>
+    //         .table td,
+    //         .table th {
+    //             vertical-align: middle;
+    //         }
+    //     </style>`
+
+    // if (productos.length > 0) {
+    //     html += `
+    //     <h2>Lista de Productos</h2>
+    //     <div class="table-responsive">
+    //         <table class="table table-dark">
+    //             <tr>
+    //                 <th>Nombre</th>
+    //                 <th>Precio</th>
+    //                 <th>Foto</th>
+    //             </tr>`
+    //     for (const prod of productos) {
+    //         html += `
+    //                 <tr>
+    //                 <td><a type="button" onclick="llenarFormulario('${prod.title}', '${prod.price}','${prod.thumbnail}')" title="copiar a formulario...">${prod.title}</a></td>
+    //                 <td>$${prod.price}</td>
+    //                 <td><img width="50" src=${prod.thumbnail} alt="not found"></td>
+    //                 <td><a type="button" onclick="borrarProducto('${prod.id}')">borrar</a></td>
+    //                 <td><a type="button" onclick="actualizarProducto('${prod.id}')">actualizar</a></td>
+    //                 </tr>`
+    //     }
+    //     html += `
+    //         </table>
+    //     </div >`
+    // }
+    // return Promise.resolve(html)
 }

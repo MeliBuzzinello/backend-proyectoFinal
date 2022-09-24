@@ -29,7 +29,6 @@ class ContenedorMemoria {
         const productsObj = JSON.parse(products); 
         const idMay = Math.max(...productsObj.map(x=>parseInt(x.id)))
         const prodId = {id:idMay + 1, ...elem};
-
         this.productos.push(prodId);
         return this.productos;
     }
