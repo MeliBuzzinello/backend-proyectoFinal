@@ -22,7 +22,7 @@ class ContenedorSQL {
     }
 
     async actualizar(elem, id) {
-        await this.knex(this.tabla).where('id', id).update({ elem });
+        await this.knex(this.tabla).where('id', id).update( elem );
     }
 
     async borrar(id) {

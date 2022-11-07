@@ -17,18 +17,13 @@
           <td>{{this.id}}</td>
           <td><a>{{this.title}}</a></td>
           <td>${{this.price}}</td>
-          
           <td><img width="50" src={{this.thumbnail}} alt="not found" /></td>
-          <td><a
-              type="button"
-              onclick="borrarProducto({{this.id}})"
-            >borrar</a></td>
-          <td><a
-              type="button"
-              onclick="llenarFormulario('{{this.title}}','{{this.price}}','{{this.thumbnail}}', '{{this.id}}')"
-            >modificar</a></td>
+          <td><a type="button" onclick="quitarDelCarrito({{this.id}})">borrar</a></td>
         </tr>
       {{/each}}
     </table>
+    {{#else}}
+    <br><h4>carrito sin productos</h2>
+    {{/else}}
   </div>
 {{/if}}

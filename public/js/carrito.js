@@ -30,7 +30,7 @@ const carritosApi = {
         return fetch(`/api/carritos/${idCarrito}/productos`)
             .then(data => data.json())
     },
-    deleteProd: (idCarrito, idProducto) => {
+    delete: (idCarrito, idProducto) => {
         const options = {
             method: 'DELETE',
         }
@@ -74,6 +74,7 @@ function agregarAlCarrito(idCarrito, idProducto) {
     })
 }
 
+
 function quitarDelCarrito(idProducto) {
     const idCarrito = document.getElementById('comboCarritos').value
     return carritosApi.deleteProd(idCarrito, idProducto).then(() => {
@@ -90,7 +91,7 @@ function actualizarListaCarrito(idCarrito) {
 }
 
 function makeHtmlTable(productos) {
-    return fetch('plantillas/tabla-productos.hbs')
+    return fetch('plantillas/tabla-carrito.hbs')
         .then(respuesta => respuesta.text())
         .then(plantilla => {
             const template = Handlebars.compile(plantilla);

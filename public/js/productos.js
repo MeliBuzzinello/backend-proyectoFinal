@@ -34,10 +34,16 @@ const productosApi = {
 //-------------------------------------------------------------------
 // productos
 
-
 actualizarListaProductos()
 
-const formAgregarProducto = document.getElementById('formAgregarProducto')
+const formAgregarProducto = document.getElementById('formAgregarProducto');
+const btnAgregar= document.getElementById('btn');
+const btnModificar =  document.getElementById('btnModificar');
+const btnCancelar = document.getElementById('btnCancelar');
+
+btnModificar.style.visibility = "hidden";
+btnCancelar.style.visibility = "hidden";
+
 formAgregarProducto.addEventListener('submit', e => {
     e.preventDefault()
     const producto = leerProductoDelFormulario()
@@ -74,23 +80,54 @@ function borrarProducto(idProd) {
 }
 
 function actualizarProducto(idProd) {
-    console.log(idProd)
     const nuevoProd = llenarFormulario()
     productosApi.put(idProd, nuevoProd)
         .then(actualizarListaProductos)
 }
 
-
-function llenarFormulario(title = '', price = '', thumbnail = '') {
+let idProd = null;
+function llenarFormulario(title = '', price = '', thumbnail = '', id) {
     formAgregarProducto[0].value = title
     formAgregarProducto[1].value = price
     formAgregarProducto[2].value = thumbnail
+    idProd = id
+
+    btnAgregar.style.visibility = 'hidden';
+    btnModificar.style.visibility = 'visible';
+    btnCancelar.style.visibility = "visible";
 }
 
-function makeHtmlTable(productos) {
+btnModificar.addEventListener('click', e => {
+    e.preventDefault();
+    const nuevoProd = leerProductoDelFormulario()
+        productosApi.put(idProd, nuevoProd)
+            .then(actualizarListaProductos)
 
+    btnAgregar.style.visibility = "visible";
+    btnModificar.style.visibility = "hidden"; 
+    btnCancelar.style.visibility = "hidden";
+    formAgregarProducto.reset()
+})
 
+btnCancelar.addEventListener('click', e => {
+    e.preventDefault();
     
+    btnAgregar.style.visibility = "visible";
+    btnModificar.style.visibility = "hidden";  
+    btnCancelar.style.visibility = "hidden"; 
+    formAgregarProducto.reset()
+})
+
+
+
+// function actualizarProducto(idProd) {
+//     const nuevoProd = leerProductoDelFormulario()
+//     productosApi.put(idProd, nuevoProd)
+//         .then(actualizarListaProductos)
+// }
+
+
+function makeHtmlTable(productos) {
     return fetch('plantillas/tabla-productos.hbs')
         .then(respuesta => respuesta.text())
         .then(plantilla => {

@@ -24,6 +24,7 @@ class ContenedorMongoDb {
     }
 
     async actualizar(nuevoElem, userid) {
+        
         await this.coleccion.save({_id: ObjectId(userid)},{nuevoElem});
     }
 
