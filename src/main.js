@@ -1,6 +1,6 @@
 import app from './server.js';
 
-const PORT = 8081;
+const PORT = process.env.PORT || 8080;
 
 // app.set('port', process.env.PERS || 8080),
 
