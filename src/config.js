@@ -3,7 +3,7 @@ export default {
         path: './DB'
     },
     mongodb: {
-        cnxStr: 'mongodb://localhost/proyectofinal',
+        cnxStr: 'mongodb://localhost/27027',
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -33,10 +33,10 @@ export default {
     mariaDb: {
         client: 'mysql',
         connection: {
-            host: '0.0.0.0/0',
-            user: 'root',
-            password: '',
-            database: 'coderhouse'
+            host: 'us-cdbr-east-06.cleardb.net',
+            user: 'b99897dee4984d',
+            password: 'cdc51f76',
+            database: 'heroku_7a9ed184d6b1f03'
         }
     }
 }

@@ -1,5 +1,5 @@
 import ContenedorSQL from "../../contenedores/ContenedorSQL.js";
-//import { crearTablasCarritos, crearTablasProdEnCarritos } from '../../../scripts/crearTablas.js';
+import { crearTablasCarritos, crearTablasProdEnCarritos } from '../../../scripts/crearTablas.js';
 //NOTA: aun sin llamar las funciones crearTablas, se inicializan solas. Reiniciando las tablas a 0
 
 class CarritosDaoSQL {
